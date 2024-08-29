@@ -22,7 +22,7 @@ namespace Bouvet.Lunsjbotten
         }
 
         [Function("PostMenu")]
-        public async Task Run([TimerTrigger("0 45 9 * * 1-5")] TimerInfo myTimer)
+        public async Task Run([TimerTrigger("0 45 7 * * 1-5")] TimerInfo myTimer)
         {
             _logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
