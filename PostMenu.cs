@@ -28,7 +28,7 @@ public class PostMenu
     {
         _logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
-        var ukesmenyer = ParseOnlineMenu().ToList();
+        var ukesmenyer = ParseOnlineMenu().OrderBy(q => q.date).ToList();
         var dagensIndeks = ukesmenyer.FindIndex(u => u.date.Date == DateTime.Now.Date);
 
         var dagens = ukesmenyer[dagensIndeks];
@@ -44,7 +44,11 @@ public class PostMenu
         var morgenTekst = Summary(morgendagens.Text) ?? morgendagens.Text;
         var haikuTekst = Haiku(dagens.Text) ?? "Ingen haiku i dag";
 
-        var slackMessage = new SlackMessage(bedreTekst, dagens.Allergens, morgenTekst, haikuTekst);
+        var dag = morgendagens.date.DayOfWeek == DayOfWeek.Monday
+            ? "Mandagens"
+            : "Morgendagens";
+
+        var slackMessage = new SlackMessage(bedreTekst, dagens.Allergens, morgenTekst, haikuTekst, dag);
 
         await PostToSlack(slackMessage);
 
@@ -126,4 +130,4 @@ public class PostMenu
 record Menu(DateTime date, string Day, string Text, string Allergens);
 record AiMenuContainer(IEnumerable<AiMenu> data);
 record AiMenu(DateTime dato, string tekst);
-record SlackMessage(string meny, string allergener, string nestemeny, string haiku);
+record SlackMessage(string meny, string allergener, string nestemeny, string haiku, string dag);
